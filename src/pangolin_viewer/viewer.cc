@@ -1,8 +1,11 @@
-#include <pangolin/pangolin.h>
 #include "viewer.h"
+#include <unistd.h>
+#include <iostream>
+using namespace std;
 
 namespace pangolin_viewer
 {
+
     void Viewer::canvas()
     {
         pangolin::CreateWindowAndBind("Main", 640, 480);
@@ -28,8 +31,34 @@ namespace pangolin_viewer
             // Render OpenGL Cube
             pangolin::glDrawColouredCube();
 
+            glPushMatrix();
+
+            glLineWidth(1);
+            glBegin(GL_LINES);
+
+            for (int y = 0; y < 100; y += 10)
+            {
+                for (int x = 0; x < 100; x += 10)
+                {
+                    draw_line(y, x, 0, y + 10, x + 10, 0);
+                }
+            }
+            glEnd();
+
+            glPopMatrix();
+
             // Swap frames and Process Events
             pangolin::FinishFrame();
+
+            usleep(1000);
         }
     }
+    void Viewer::draw_points()
+    {
+    }
+
+    void Viewer::set_map_class()
+    {
+    }
+
 } // namespace pangolin_viewer
