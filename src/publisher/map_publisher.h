@@ -1,22 +1,26 @@
-#ifndef OPENVSLAM_PUBLISH_MAP_PUBLISHER_H
-#define OPENVSLAM_PUBLISH_MAP_PUBLISHER_H
+#ifndef PUBLISHER_MAP_PUBLISHER_H
+#define PUBLISHER_MAP_PUBLISHER_H
 
 #include <mutex>
 
 #include <msgpack.hpp>
 #include <string>
-#include <iostream>
 #include <sstream>
+#include "../data/data.h"
 
 namespace publish
 {
-
     class map_publisher
     {
     public:
-        void test();
+        void load_json();
+
+        std::vector<quicktype::Landmark> get_landmarks();
+
+    private:
+        nlohmann::json map_j;
     };
 
 } // namespace publish
 
-#endif // OPENVSLAM_PUBLISH_MAP_PUBLISHER_H
+#endif // PUBLISHER_MAP_PUBLISHER_H

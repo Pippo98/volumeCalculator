@@ -1,12 +1,15 @@
 #include "viewer.h"
 #include <unistd.h>
+
+#include <opencv2/highgui.hpp>
+
 #include <iostream>
 using namespace std;
 
 namespace pangolin_viewer
 {
 
-    void Viewer::canvas()
+    void Viewer::canvas(std::vector<quicktype::Landmark> landmarks)
     {
         pangolin::CreateWindowAndBind("Main", 640, 480);
         glEnable(GL_DEPTH_TEST);
@@ -28,24 +31,22 @@ namespace pangolin_viewer
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             d_cam.Activate(s_cam);
 
-            // Render OpenGL Cube
-            pangolin::glDrawColouredCube();
+                        glLineWidth(1);
+            glBegin(GL_POINTS);
 
-            glPushMatrix();
-
-            glLineWidth(1);
-            glBegin(GL_LINES);
-
-            for (int y = 0; y < 100; y += 10)
+            for (auto lm : landmarks)
             {
-                for (int x = 0; x < 100; x += 10)
-                {
-                    draw_line(y, x, 0, y + 10, x + 10, 0);
-                }
+                int scale = 1;
+
+                float x, y, z;
+                x = lm.pos_w[0] / scale;
+                y = lm.pos_w[1] / scale;
+                z = lm.pos_w[2] / scale;
+                //glVertex3f(x, y, z);
+                glVertex3fv(lm.pos_w.cast<float>().eval().data());
+                // cout << lm.pos_w.cast<float>().eval().data();
             }
             glEnd();
-
-            glPopMatrix();
 
             // Swap frames and Process Events
             pangolin::FinishFrame();
@@ -53,8 +54,20 @@ namespace pangolin_viewer
             usleep(1000);
         }
     }
-    void Viewer::draw_points()
+    void Viewer::draw_points(std::vector<quicktype::Keypt> keypoints)
     {
+        glPushMatrix();
+
+        glLineWidth(1);
+        glBegin(GL_LINES);
+
+        for (int i = 0; i < keypoints.size(); i++)
+        {
+            glVertex3f(keypoints[i].pt[0], keypoints[i].pt[1], 0.0f);
+        }
+        glEnd();
+
+        glPopMatrix();
     }
 
     void Viewer::set_map_class()

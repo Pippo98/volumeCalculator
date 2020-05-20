@@ -1,5 +1,6 @@
 #include "pangolin_viewer/viewer.h"
 #include "publisher/map_publisher.h"
+#include "data/data.h"
 
 #include <iostream>
 using namespace std;
@@ -10,9 +11,13 @@ int main(int, char **)
 
     publish::map_publisher map;
 
-    map.test();
+    map.load_json();
 
-    //pgV.canvas();
+    //std::vector<quicktype::Keypt> keypts = map.get_keyframes();
+
+    std::vector<quicktype::Landmark> landmarks = map.get_landmarks();
+
+    pgV.canvas(landmarks);
 
     return 0;
 }

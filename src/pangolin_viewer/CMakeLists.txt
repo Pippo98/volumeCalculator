@@ -9,6 +9,10 @@ add_library(pangolin_viewer
             viewer.h
             viewer.cc)
 
+find_package(Eigen3 REQUIRED)
+
 target_link_libraries(pangolin_viewer
                       PUBLIC
-                      pangolin)
+                      pangolin
+                      opencv_highgui
+                      Eigen3::Eigen)

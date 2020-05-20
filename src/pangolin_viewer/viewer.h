@@ -3,17 +3,18 @@
 
 #include <pangolin/pangolin.h>
 
+#include <memory>
+#include "../data/data.h"
+
 namespace pangolin_viewer
 {
     class Viewer
     {
     public:
-        void canvas();
+        void canvas(std::vector<quicktype::Landmark> keypoints);
 
         void set_map_class();
-
-    private:
-        void draw_points();
+        void draw_points(std::vector<quicktype::Keypt>);
 
     private:
         inline void draw_line(float x1, float y1, float z1,
