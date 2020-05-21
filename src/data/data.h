@@ -79,6 +79,11 @@ namespace quicktype
         std::vector<int64_t> x_rights;
     };
 
+    struct NearPoints
+    {
+        std::vector<std::tuple<quicktype::Vec3_t, std::vector<quicktype::Vec3_t>>> points;
+    };
+
     struct Landmark
     {
         int64_t the_1_st_keyfrm;

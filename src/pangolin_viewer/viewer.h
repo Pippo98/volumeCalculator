@@ -5,16 +5,24 @@
 
 #include <memory>
 #include "../data/data.h"
+#include "../publisher/map_publisher.h"
 
 namespace pangolin_viewer
 {
     class Viewer
     {
+
     public:
-        void canvas(std::vector<quicktype::Landmark> keypoints);
+        Viewer(publish::map_publisher *map_)
+        {
+            map = map_;
+        };
+
+        void canvas();
 
         void set_map_class();
-        void draw_points(std::vector<quicktype::Keypt>);
+        void draw_points();
+        void draw_near_points();
 
     private:
         inline void draw_line(float x1, float y1, float z1,
@@ -23,6 +31,8 @@ namespace pangolin_viewer
             glVertex3f(x1, y1, z1);
             glVertex3f(x2, y2, z2);
         }
+
+        publish::map_publisher *map;
     };
 
 }; // namespace pangolin_viewer

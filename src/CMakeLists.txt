@@ -1,3 +1,4 @@
+add_subdirectory(ann)
 add_subdirectory(data)
 add_subdirectory(publisher)
 add_subdirectory(pangolin_viewer)
@@ -12,6 +13,7 @@ foreach(EXECUTABLE_TARGET IN LISTS EXECUTABLE_TARGETS)
     target_link_libraries(${EXECUTABLE_TARGET} PRIVATE pangolin_viewer)
     target_link_libraries(${EXECUTABLE_TARGET} PRIVATE publisher)
     target_link_libraries(${EXECUTABLE_TARGET} PRIVATE data)
+    target_link_libraries(${EXECUTABLE_TARGET} PRIVATE ANN)
     # Link to required libraries
 
 endforeach()

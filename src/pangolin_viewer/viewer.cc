@@ -9,7 +9,7 @@ using namespace std;
 namespace pangolin_viewer
 {
 
-    void Viewer::canvas(std::vector<quicktype::Landmark> landmarks)
+    void Viewer::canvas()
     {
         pangolin::CreateWindowAndBind("Main", 640, 480);
         glEnable(GL_DEPTH_TEST);
@@ -18,6 +18,11 @@ namespace pangolin_viewer
         pangolin::OpenGlRenderState s_cam(
             pangolin::ProjectionMatrix(640, 480, 420, 420, 320, 240, 0.2, 100),
             pangolin::ModelViewLookAt(-2, 2, -2, 0, 0, 0, pangolin::AxisY));
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // depth testing to be enabled for 3D mouse handler
+        glEnable(GL_DEPTH_TEST);
 
         // Create Interactive View in window
         pangolin::Handler3D handler(s_cam);
@@ -31,46 +36,50 @@ namespace pangolin_viewer
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             d_cam.Activate(s_cam);
 
-                        glLineWidth(1);
-            glBegin(GL_POINTS);
-
-            for (auto lm : landmarks)
-            {
-                int scale = 1;
-
-                float x, y, z;
-                x = lm.pos_w[0] / scale;
-                y = lm.pos_w[1] / scale;
-                z = lm.pos_w[2] / scale;
-                //glVertex3f(x, y, z);
-                glVertex3fv(lm.pos_w.cast<float>().eval().data());
-                // cout << lm.pos_w.cast<float>().eval().data();
-            }
-            glEnd();
+            draw_points();
+            draw_near_points();
 
             // Swap frames and Process Events
             pangolin::FinishFrame();
 
-            usleep(1000);
+            //usleep(1000);
         }
     }
-    void Viewer::draw_points(std::vector<quicktype::Keypt> keypoints)
+    void Viewer::draw_points()
     {
-        glPushMatrix();
+        std::vector<quicktype::Vec3_t> points = map->get_points();
 
-        glLineWidth(1);
-        glBegin(GL_LINES);
-
-        for (int i = 0; i < keypoints.size(); i++)
+        glBegin(GL_POINTS);
+        glColor3f(1, 0, 0);
+        glPointSize(4);
+        for (auto point : points)
         {
-            glVertex3f(keypoints[i].pt[0], keypoints[i].pt[1], 0.0f);
+            glVertex3fv(point.cast<float>().eval().data());
+        }
+
+        glEnd();
+    }
+
+    void Viewer::draw_near_points()
+    {
+        quicktype::NearPoints points = map->get_near_points();
+
+        glBegin(GL_LINES);
+        glColor3f(1, 1, 1);
+        for (auto point : points.points)
+        {
+            quicktype::Vec3_t ref = std::get<0>(point);
+            for (auto pt : std::get<1>(point))
+            {
+                glVertex3f(ref[0], ref[1], ref[2]);
+                glVertex3f(pt[0], pt[1], pt[2]);
+            }
         }
         glEnd();
-
-        glPopMatrix();
     }
 
-    void Viewer::set_map_class()
+    void
+    Viewer::set_map_class()
     {
     }
 

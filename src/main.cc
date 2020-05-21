@@ -7,17 +7,20 @@ using namespace std;
 
 int main(int, char **)
 {
-    pangolin_viewer::Viewer pgV;
 
     publish::map_publisher map;
 
+    pangolin_viewer::Viewer pgV(&map);
+
+    cout << "Loading Map" << std::endl;
     map.load_json();
+    cout << "Done" << std::endl;
 
-    //std::vector<quicktype::Keypt> keypts = map.get_keyframes();
-
+    cout << "Loading Landmarks" << std::endl;
     std::vector<quicktype::Landmark> landmarks = map.get_landmarks();
+    cout << "Found " << landmarks.size() << " landmarks" << std::endl;
 
-    pgV.canvas(landmarks);
+    pgV.canvas();
 
     return 0;
 }
